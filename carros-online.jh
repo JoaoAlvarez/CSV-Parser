@@ -1,0 +1,169 @@
+
+entity Marca {
+	nome String
+}
+
+entity Combustivel {
+	nome String
+}
+
+entity TipoVeiculo {
+	nome String
+}
+
+entity Categoria {
+	nome String
+}
+
+entity Acessorio {
+	nome String
+}
+
+enum TipoCambioEnum {
+	AUTOMATICO, MANUAL
+}
+enum EstadoVeiculoEnum {
+	NOVO, SEMI_NOVO, USADO
+}
+enum TipoDirecaoEnum {
+	MECANICA, ELETRICA, HIDRAULICA
+}
+enum PericiaCautelarEnum {
+	APROVADO,
+    APROVADO_COM_OBSERVACAO, 
+    APROVADO_COM_RESTRICAO,
+    REPROVADO
+}
+enum OrigemVeiculoEnum {
+	NACIONAL,
+    IMPORTADO
+}
+
+entity Marcador {
+	nome String required
+}
+
+entity Veiculo {
+	codigoInterno String
+	modelo String required
+    ano Integer required
+    km Long required
+    motor String required
+    gnv Boolean required
+    placa String required maxlength(7)
+    chassi String required
+    renavam String required
+    corExterna String
+    portas Integer
+    tabelaFipe BigDecimal
+    anoFabricacao Integer required
+    anoModelo Integer required
+    dataEntrada LocalDate required
+    dataVenda LocalDate
+    direcao TipoDirecaoEnum 
+    cambio TipoCambioEnum
+    estado EstadoVeiculoEnum
+	publicado Boolean
+    valorCompra BigDecimal required
+    valorVenda BigDecimal
+    descricaoExtra String
+}
+
+entity DadosExtrasVeiculo{
+	origem OrigemVeiculoEnum
+	blindado Boolean
+	corInterna String
+	numeroMotor String
+}
+
+entity ArquivosVeiculo{
+	descricao String required
+    url String
+}
+
+entity ArquivosFornecedor{
+	descricao String required
+    url String
+}
+
+entity LancamentosVeiculo{
+	descricao String required
+    custo BigDecimal required
+    pago Boolean required
+    createdAt ZonedDateTime
+}
+
+entity Publicacao {
+	titulo String required
+    descricao String maxlength(2000)
+	dataPublicacao ZonedDateTime
+    visualizacoes Integer
+    valor BigDecimal
+    valorPromocional BigDecimal
+    valorDeEntrada BigDecimal
+}
+
+entity ImagemPublicacao {
+	url String
+}
+
+entity Empresa {
+    nome String
+    cnpj String
+    estado String
+    cidade String
+    bairro String
+}
+
+entity Local{
+	nome String
+}
+
+entity Loja {
+    nome String
+    cnpj String
+    estado String
+    cidade String
+    bairro String
+}
+
+entity Cidade {
+	nome String
+}
+entity Estado {
+	nome String
+}
+
+relationship ManyToOne {
+  ImagemPublicacao to Publicacao
+  Publicacao to Veiculo
+  Veiculo to Categoria
+  Veiculo to TipoVeiculo
+  Veiculo to Combustivel
+  Veiculo to Marca
+  Loja to Empresa
+  Veiculo to Empresa
+  Empresa to Cidade
+  Empresa to Estado
+  Loja to Cidade
+  Loja to Estado
+  ArquivosVeiculo to Veiculo
+  ArquivosFornecedor to Veiculo
+  LancamentosVeiculo to Veiculo
+  Acessorio to DadosExtrasVeiculo
+  Local to Loja
+  Veiculo to Marcador
+}
+
+relationship OneToOne {
+	DadosExtrasVeiculo to Veiculo
+}
+
+// Set pagination options
+paginate Loja, Publicacao, Cidade with infinite-scroll
+paginate Veiculo, Empresa, Loja with pagination
+
+// Set service options to all except few
+service all with serviceClass
+// Set an angular suffix
+// angularSuffix * with mySuffix
